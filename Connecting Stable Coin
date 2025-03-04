@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.18;
+
+npm install @openzeppelin/contracts
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+contract StableYieldAggregator {
+    IERC20 public stablecoin; // The stablecoin we work with (e.g., DAI)
+    uint256 public constant minimumDeposit = 50 * 1e18; // 50 tokens (assuming 18 decimals)
+    mapping(address => uint256) public deposits;
+    address public owner;
+
+    event Deposit(address indexed user, uint256 amount);
+    event Withdrawal(address indexed user, uint256 amount);
+
+    constructor(address _stablecoinAddress) {
+        stablecoin = IERC20(_stablecoinAddress);
+        owner = msg.sender;
+    }
+
+    // Accept stablecoin deposits using transferFrom
+    function depositStablecoin(uint256 _amount) external {
+        require(_amount >= minimumDeposit, "Deposit amount too low");
+        bool success = stablecoin.transferFrom(msg.sender, address(this), _amount);
+        require(success, "Token transfer failed");
+        deposits[msg.sender] += _amount;
+        emit Deposit(msg.sender, _amount);
+    }
+
+    // Withdraw deposited stablecoins using transfer
+    function withdrawStablecoin(uint256 _amount) external {
+        require(deposits[msg.sender] >= _amount, "Insufficient balance");
+        deposits[msg.sender] -= _amount;
+        bool success = stablecoin.transfer(msg.sender, _amount);
+        require(success, "Token transfer failed");
+        emit Withdrawal(msg.sender, _amount);
+    }
+}
