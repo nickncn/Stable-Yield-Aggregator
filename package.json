@@ -1,0 +1,47 @@
+{
+    "name": "stable-yield-aggregator",
+    "version": "1.0.0",
+    "description": "Production-ready ERC-4626 stablecoin yield aggregator with automated multi-strategy rebalancing",
+    "keywords": [
+        "defi",
+        "yield",
+        "erc4626",
+        "vault",
+        "stablecoin",
+        "usdc",
+        "aave",
+        "compound",
+        "solidity",
+        "foundry"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/your-org/stable-yield-aggregator.git"
+    },
+    "license": "MIT",
+    "scripts": {
+        "build": "forge build --sizes",
+        "test": "forge test -vvv",
+        "test:unit": "forge test --match-contract 'VaultTest|StrategiesTest|AccountingTest'",
+        "test:integration": "forge test --match-contract 'RebalancerTest'",
+        "test:invariant": "forge test --match-contract 'InvariantsTest'",
+        "test:fuzz": "forge test --match-contract 'FuzzShareAccountingTest'",
+        "test:gas": "forge test --gas-report",
+        "test:coverage": "forge coverage --report lcov && genhtml lcov.info --output-directory coverage",
+        "snapshot": "forge snapshot --check",
+        "snapshot:update": "forge snapshot",
+        "clean": "forge clean",
+        "fmt": "forge fmt",
+        "lint": "forge fmt --check && slither .",
+        "deploy:local": "forge script script/Deploy.s.sol --rpc-url http://localhost:8545 --broadcast --private-key $PRIVATE_KEY",
+        "deploy:sepolia": "forge script script/Deploy.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify --private-key $PRIVATE_KEY",
+        "deploy:mainnet": "forge script script/Deploy.s.sol --rpc-url $MAINNET_RPC_URL --broadcast --verify --private-key $PRIVATE_KEY",
+        "rebalance:local": "forge script script/Rebalance.s.sol --rpc-url http://localhost:8545 --broadcast --private-key $PRIVATE_KEY",
+        "simulate:local": "forge script script/SimulatePnL.s.sol --rpc-url http://localhost:8545 --broadcast --private-key $PRIVATE_KEY",
+        "node:start": "anvil --host 0.0.0.0 --port 8545 --chain-id 31337",
+        "node:fork": "anvil --fork-url $MAINNET_RPC_URL --host 0.0.0.0 --port 8545"
+    },
+    "devDependencies": {
+        "lcov": "^0.1.2"
+    }
+}
